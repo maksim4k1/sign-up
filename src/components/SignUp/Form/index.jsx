@@ -2,6 +2,14 @@ import { nanoid } from "nanoid";
 import React, { useState } from "react";
 import styled from "styled-components";
 
+Object.size = function(object) {
+    let length = 0;
+    for(let key in object){
+        if(key !== undefined) length++;
+    }
+    return length;
+}
+
 const FormBlock = styled.form`
     width: 100%;
     padding: 0 30px;
@@ -44,6 +52,13 @@ const Label = styled.label`
     }
 `;
 
+const Error = styled.div`
+    grid-column: 1/3;
+    color: #ff0000;
+    font-size: 12px;
+    text-align: center;
+`;
+
 const Button = styled.button`
     height: 40px;
     display: flex;
@@ -73,26 +88,54 @@ const inputs = [
 
 function Form () {
     const [formData, setFormData] = useState({});
+    const [error, setError] = useState("");
 
     function editInputValue(event) {
-        const {name, value} = event.target;
+        const {name, value, type} = event.target;
         let newFormData = formData;
-        newFormData[name] = value;
+        if(type === "checkbox"){
+            const {checked} = event.target;
+            newFormData[name] = checked;
+        } else{
+            newFormData[name] = value;
+        }
 
         setFormData(newFormData);
     }
 
+    function validateForm(event){
+        event.preventDefault();
+
+        if(Object.size(formData) < inputs.length){
+            setError("Заполните все поля!");
+        } else if(formData.password !== formData.confirmPassword){
+            setError("Пароли не совпадают!");
+        } else if(formData.isAccept === false || formData.isAccept === undefined){
+            setError("You must accept the Terms of Service and Privacy Policy");
+        } else{
+            setError("");
+
+            alert(`
+            name: ${formData.firstName} ${formData.lastName}
+            email: ${formData.email}
+            password: ${formData.password}
+            accept: ${formData.isAccept}
+            `);
+        }
+    }
+
     return(
-        <FormBlock>
+        <FormBlock onSubmit={validateForm}>
             {
                 inputs.map(item => {
                     return <Input key={nanoid()} name={item.name} type={item.type} placeholder={item.placeholder} value={formData[item.name]} onChange={editInputValue}/>
                 })
             }
             <Label>
-                <input type="checkbox" />
+                <input name="isAccept" type="checkbox" checked={formData.isAccept} onChange={editInputValue}/>
                 <div>I accept the <a href="/">Terms of Use</a> {"&"} <a href="/">Privacy Policy</a>.</div>
             </Label>
+            <Error>{error}</Error>
             <Button type="submit">Sign Up</Button>
         </FormBlock>
     );

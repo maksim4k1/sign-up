@@ -1,8 +1,9 @@
 import React from "react";
 import styled from "styled-components";
+import Form from "./Form";
 
 const SignUpSection = styled.section`
-    width: 500px;
+    width: 400px;
     padding: 30px 0 50px;
     margin: 0 auto;
     background: var(--main-white);
@@ -36,6 +37,7 @@ function SignUp () {
             <Title>Sign Up</Title>
             <Text>Please fill in this form to create an account!</Text>
             <Line/>
+            <Form/>
         </SignUpSection>
     );
 }

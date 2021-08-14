@@ -15,9 +15,11 @@ const Input = styled.input`
     padding: 0 10px;
     grid-column: 1/3;
     &:nth-child(1){
+        width: 160px;
         grid-column: 1/2;
     }
     &:nth-child(2){
+        width: 160px;
         grid-column: 2/3;
     }
     color: var(--main-black);
@@ -50,7 +52,14 @@ const Button = styled.button`
     color: var(--main-white);
     font-weight: 700;
     background: var(--main-blue);
+    border: 2px solid rgba(0,0,0,0);
     border-radius: 3px;
+    transition: color 0.3s, background 0.3s, border 0.3s;
+    &:hover{
+        color: var(--main-blue);
+        background: var(--main-white);
+        border: 2px solid var(--main-blue);
+    }
 `;
 
 function Form () {
@@ -63,7 +72,7 @@ function Form () {
             <Input type="password" placeholder="Confirm Password"/>
             <Label>
                 <input type="checkbox" />
-                I accept the <a href="/">Terms of Use</a> {"&"} <a href="/">Privacy Policy</a>.
+                <div>I accept the <a href="/">Terms of Use</a> {"&"} <a href="/">Privacy Policy</a>.</div>
             </Label>
             <Button type="submit">Sign Up</Button>
         </FormBlock>

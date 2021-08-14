@@ -31,9 +31,10 @@ img{vertical-align: top;}
 h1,h2,h3,h4,h5,h6{font-size:inherit; font-weight: 400;}
 
 body{
+  padding: 40px 10px;
   background: var(--main-blue);
   color: var(--main-txt-grey);
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Roboto', sans-serif;
 }
 
 /* Стили контейнеров */
@@ -47,4 +48,5 @@ body{
   --main-blue: #5097D6;
   --main-txt-grey: #9C9B9F;
   --main-bg-grey: #F2F2F2;
+  --main-shadow-black: rgba(0, 0, 0, 0.3);
 }

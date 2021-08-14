@@ -1,4 +1,5 @@
-import React from "react";
+import { nanoid } from "nanoid";
+import React, { useState } from "react";
 import styled from "styled-components";
 
 const FormBlock = styled.form`
@@ -62,14 +63,32 @@ const Button = styled.button`
     }
 `;
 
+const inputs = [
+    {name: "firstName", type: "text", placeholder: "First Name"},
+    {name: "lastName", type: "text", placeholder: "Last Name"},
+    {name: "email", type: "email", placeholder: "Email"},
+    {name: "password", type: "password", placeholder: "Password"},
+    {name: "confirmPassword", type: "password", placeholder: "Confirm Password"},
+];
+
 function Form () {
+    const [formData, setFormData] = useState({});
+
+    function editInputValue(event) {
+        const {name, value} = event.target;
+        let newFormData = formData;
+        newFormData[name] = value;
+
+        setFormData(newFormData);
+    }
+
     return(
         <FormBlock>
-            <Input type="text" placeholder="First Name"/>
-            <Input type="text" placeholder="Last Name"/>
-            <Input type="email" placeholder="Email"/>
-            <Input type="password" placeholder="Password"/>
-            <Input type="password" placeholder="Confirm Password"/>
+            {
+                inputs.map(item => {
+                    return <Input key={nanoid()} name={item.name} type={item.type} placeholder={item.placeholder} value={formData[item.name]} onChange={editInputValue}/>
+                })
+            }
             <Label>
                 <input type="checkbox" />
                 <div>I accept the <a href="/">Terms of Use</a> {"&"} <a href="/">Privacy Policy</a>.</div>

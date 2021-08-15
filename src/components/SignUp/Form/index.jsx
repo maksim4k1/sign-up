@@ -1,4 +1,3 @@
-import { nanoid } from "nanoid";
 import React, { useState } from "react";
 import styled from "styled-components";
 
@@ -91,22 +90,23 @@ function Form () {
     const [error, setError] = useState("");
 
     function editInputValue(event) {
-        const {name, value, type} = event.target;
-        let newFormData = formData;
-        if(type === "checkbox"){
-            const {checked} = event.target;
-            newFormData[name] = checked;
-        } else{
-            newFormData[name] = value;
-        }
-
-        setFormData(newFormData);
+        const {name, value, checked, type} = event.target;
+        setFormData({...formData, [name]: type === "checkbox" ? checked : value});
+        setError("");
     }
 
     function validateForm(event){
         event.preventDefault();
 
-        if(Object.size(formData) < inputs.length){
+        let inputsIsFilled;
+
+        for(let key in formData){
+            if(formData[key] === ""){
+                inputsIsFilled = false;
+            }
+        }
+
+        if(Object.size(formData) < inputs.length || inputsIsFilled === false){
             setError("Заполните все поля!");
         } else if(formData.password !== formData.confirmPassword){
             setError("Пароли не совпадают!");
@@ -128,7 +128,7 @@ function Form () {
         <FormBlock onSubmit={validateForm}>
             {
                 inputs.map(item => {
-                    return <Input key={nanoid()} name={item.name} type={item.type} placeholder={item.placeholder} value={formData[item.name]} onChange={editInputValue}/>
+                    return <Input key={item.name} name={item.name} type={item.type} placeholder={item.placeholder} value={formData[item.name]} onChange={editInputValue}/>
                 })
             }
             <Label>

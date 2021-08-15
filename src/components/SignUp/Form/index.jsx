@@ -1,5 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
+
+Object.size = function(object) {
+    let length = 0;
+    for(let key in object){
+        if(key !== undefined) length++;
+    }
+    return length;
+}
 
 const FormBlock = styled.form`
     width: 100%;
@@ -43,6 +51,13 @@ const Label = styled.label`
     }
 `;
 
+const Error = styled.div`
+    grid-column: 1/3;
+    color: #ff0000;
+    font-size: 12px;
+    text-align: center;
+`;
+
 const Button = styled.button`
     height: 40px;
     display: flex;
@@ -62,18 +77,65 @@ const Button = styled.button`
     }
 `;
 
+const inputs = [
+    {name: "firstName", type: "text", placeholder: "First Name"},
+    {name: "lastName", type: "text", placeholder: "Last Name"},
+    {name: "email", type: "email", placeholder: "Email"},
+    {name: "password", type: "password", placeholder: "Password"},
+    {name: "confirmPassword", type: "password", placeholder: "Confirm Password"},
+];
+
 function Form () {
+    const [formData, setFormData] = useState({});
+    const [error, setError] = useState("");
+
+    function editInputValue(event) {
+        const {name, value, checked, type} = event.target;
+        setFormData({...formData, [name]: type === "checkbox" ? checked : value});
+        setError("");
+    }
+
+    function validateForm(event){
+        event.preventDefault();
+
+        let inputsIsFilled;
+
+        for(let key in formData){
+            if(formData[key] === ""){
+                inputsIsFilled = false;
+            }
+        }
+
+        if(Object.size(formData) < inputs.length || inputsIsFilled === false){
+            setError("Заполните все поля!");
+        } else if(formData.password !== formData.confirmPassword){
+            setError("Пароли не совпадают!");
+        } else if(formData.isAccept === false || formData.isAccept === undefined){
+            setError("You must accept the Terms of Service and Privacy Policy");
+        } else{
+            setError("");
+
+            alert(`
+            name: ${formData.firstName} ${formData.lastName}
+            email: ${formData.email}
+            password: ${formData.password}
+            accept: ${formData.isAccept}
+            `);
+        }
+    }
+
     return(
-        <FormBlock>
-            <Input type="text" placeholder="First Name"/>
-            <Input type="text" placeholder="Last Name"/>
-            <Input type="email" placeholder="Email"/>
-            <Input type="password" placeholder="Password"/>
-            <Input type="password" placeholder="Confirm Password"/>
+        <FormBlock onSubmit={validateForm}>
+            {
+                inputs.map(item => {
+                    return <Input key={item.name} name={item.name} type={item.type} placeholder={item.placeholder} value={formData[item.name]} onChange={editInputValue}/>
+                })
+            }
             <Label>
-                <input type="checkbox" />
+                <input name="isAccept" type="checkbox" checked={formData.isAccept} onChange={editInputValue}/>
                 <div>I accept the <a href="/">Terms of Use</a> {"&"} <a href="/">Privacy Policy</a>.</div>
             </Label>
+            <Error>{error}</Error>
             <Button type="submit">Sign Up</Button>
         </FormBlock>
     );
